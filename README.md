@@ -1,3 +1,16 @@
 # Common Setup
 
-python -m venv venv --system-site-packages
+* Create docker instance with the following command:
+  ```
+  docker run --gpus all -it --rm --ipc=host \
+  -v $HOME/.cache/huggingface:/root/.cache/huggingface \
+  -v ${PWD}:/workspace -w /workspace \
+  nvcr.io/nvidia/pytorch:25.09-py3
+  ```
+* Run the following script to setup docker instance. It:
+  * installs basic ubuntu utilities
+  * sets up common config files
+  * installs basic python packages
+  ```
+  ./setup.sh
+  ```
