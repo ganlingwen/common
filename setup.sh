@@ -3,11 +3,13 @@ set -e -x
 cd "$(dirname "$0")"
 
 # Config machine packages and configs.
+apt update -y
 apt install tree tmux vim -y
 
 cp .gitconfig ~/.gitconfig
 cp .tmux.conf ~/.tmux.conf
 cp .vimrc ~/.vimrc
+cp -rf /workspace/.ssh ~/
 
 # Install python packages in virtual environment.
 cd /workspace
