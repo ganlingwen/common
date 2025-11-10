@@ -16,4 +16,4 @@ cd /workspace
 rm -rf venv
 python -m venv venv --system-site-packages
 source venv/bin/activate
-pip install accelerate matplotlib peft tensorboard torch torchvision transformers
+pip install accelerate autopep8 matplotlib peft tensorboard torch torchvision transformers
