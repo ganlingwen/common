@@ -1,0 +1,22 @@
+#!/bin/bash
+
+exe=$(which autopep8)
+
+if [ -n "$exe" ]
+then
+  # Use null delimiter for safer handling of filenames with spaces
+  while IFS= read -r -d '' line; do
+    status="${line:0:2}"
+    filepath="${line:3}"
+
+    # Check if it's a Python file that's added or modified
+    if [[ "$status" =~ ^[AM] ]] && [[ "$filepath" == *.py ]]; then
+      # Use absolute path safely
+      autopep8 -i --aggressive --aggressive "$(pwd)/$filepath"
+      git add "$(pwd)/$filepath"
+    fi
+  done < <(git status -s -z)
+else
+  echo "autopep8 was not found"
+  exit 1
+fi

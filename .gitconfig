@@ -1,6 +1,10 @@
+[user]
+  email = ganlingwen@gmail.com
+  name = ganlingwen
+
 [core]
   editor = vim
-  
+
 [alias]
   amend = commit --amend
   co = checkout
