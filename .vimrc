@@ -10,3 +10,5 @@ set mouse=a
 set number
 set expandtab tabstop=2 shiftwidth=2
 set backspace=indent,eol,start
+
+let loaded_matchparen = 1
