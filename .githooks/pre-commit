@@ -1,22 +1,27 @@
 #!/bin/bash
 
-exe=$(which autopep8)
+# Get all files changed (added, modified, copied, etc., excluding deleted) from origin/main to current state
+while IFS= read -r -d '' filepath; do
+  # Skip if file doesn't exist
+  if [[ ! -f "$filepath" ]]; then
+    continue
+  fi
 
-if [ -n "$exe" ]
-then
-  # Use null delimiter for safer handling of filenames with spaces
-  while IFS= read -r -d '' line; do
-    status="${line:0:2}"
-    filepath="${line:3}"
+  # Skip if the file is not a text file to prevent accidentally modifying binaries
+  if ! file "$filepath" | grep -q "text"; then
+    continue
+  fi
 
-    # Check if it's a Python file that's added or modified
-    if [[ "$status" =~ ^[AM] ]] && [[ "$filepath" == *.py ]]; then
-      # Use absolute path safely
-      autopep8 -i --aggressive --aggressive "$(pwd)/$filepath"
-      git add "$(pwd)/$filepath"
-    fi
-  done < <(git status -s -z)
-else
-  echo "autopep8 was not found"
-  exit 1
-fi
+  # Remove trailing empty spaces and tabs for each line
+  sed -i 's/[ \t]*$//' "$filepath"
+
+  # If it's a Python file, run Python-specific formatters and linters
+  if [[ "$filepath" == *.py ]]; then
+    autopep8 -i --aggressive --aggressive "$(pwd)/$filepath"
+    ruff check --fix "$(pwd)/$filepath"
+    ruff format "$(pwd)/$filepath"
+  fi
+
+  # Re-stage the file with the stripped trailing spaces (and formatting)
+  git add "$(pwd)/$filepath"
+done < <(git diff -z --name-only --diff-filter=d origin/main)
